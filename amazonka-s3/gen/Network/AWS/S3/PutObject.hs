@@ -38,7 +38,6 @@ module Network.AWS.S3.PutObject
     , poSSECustomerKeyMD5
     , poSSEKMSKeyId
     , poGrantFullControl
-    , poContentEncoding
     , poTagging
     , poContentMD5
     , poMetadata
@@ -89,7 +88,6 @@ data PutObject = PutObject'
   , _poSSECustomerKeyMD5       :: !(Maybe Text)
   , _poSSEKMSKeyId             :: !(Maybe (Sensitive Text))
   , _poGrantFullControl        :: !(Maybe Text)
-  , _poContentEncoding         :: !(Maybe Text)
   , _poTagging                 :: !(Maybe Text)
   , _poContentMD5              :: !(Maybe Text)
   , _poMetadata                :: !(Map Text Text)
@@ -135,8 +133,6 @@ data PutObject = PutObject'
 --
 -- * 'poGrantFullControl' - Gives the grantee READ, READ_ACP, and WRITE_ACP permissions on the object.
 --
--- * 'poContentEncoding' - Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field.
---
 -- * 'poTagging' - The tag-set for the object. The tag-set must be encoded as URL Query parameters
 --
 -- * 'poContentMD5' - The base64-encoded 128-bit MD5 digest of the part data.
@@ -180,7 +176,6 @@ putObject pBucket_ pKey_ pBody_ =
     , _poSSECustomerKeyMD5 = Nothing
     , _poSSEKMSKeyId = Nothing
     , _poGrantFullControl = Nothing
-    , _poContentEncoding = Nothing
     , _poTagging = Nothing
     , _poContentMD5 = Nothing
     , _poMetadata = mempty
@@ -247,10 +242,6 @@ poSSEKMSKeyId = lens _poSSEKMSKeyId (\ s a -> s{_poSSEKMSKeyId = a}) . mapping _
 -- | Gives the grantee READ, READ_ACP, and WRITE_ACP permissions on the object.
 poGrantFullControl :: Lens' PutObject (Maybe Text)
 poGrantFullControl = lens _poGrantFullControl (\ s a -> s{_poGrantFullControl = a})
-
--- | Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field.
-poContentEncoding :: Lens' PutObject (Maybe Text)
-poContentEncoding = lens _poContentEncoding (\ s a -> s{_poContentEncoding = a})
 
 -- | The tag-set for the object. The tag-set must be encoded as URL Query parameters
 poTagging :: Lens' PutObject (Maybe Text)
@@ -345,7 +336,6 @@ instance ToHeaders PutObject where
                "x-amz-server-side-encryption-aws-kms-key-id" =#
                  _poSSEKMSKeyId,
                "x-amz-grant-full-control" =# _poGrantFullControl,
-               "Content-Encoding" =# _poContentEncoding,
                "x-amz-tagging" =# _poTagging,
                "Content-MD5" =# _poContentMD5,
                "x-amz-meta-" =# _poMetadata,
