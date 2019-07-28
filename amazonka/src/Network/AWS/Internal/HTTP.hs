@@ -145,7 +145,7 @@ perform Env{..} x = catches go handlers
 #if MIN_VERSION_http_conduit(2, 3, 0)
         liftIO $ print rq
         rs          <- liftResourceT (http rq _envManager)
-        putStrLn $ "response: " ++ show rs'
+        putStrLn $ "response: " ++ show rs
 #else
         rs'         <- liftResourceT (http rq _envManager)
         let resSrc   = responseBody rs'
