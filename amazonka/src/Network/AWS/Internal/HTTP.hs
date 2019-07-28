@@ -143,6 +143,7 @@ perform Env{..} x = catches go handlers
         logDebug _envLogger rq -- debug:ClientRequest
 
 #if MIN_VERSION_http_conduit(2, 3, 0)
+        liftIO $ print rq
         rs          <- liftResourceT (http rq _envManager)
 #else
         rs'         <- liftResourceT (http rq _envManager)
