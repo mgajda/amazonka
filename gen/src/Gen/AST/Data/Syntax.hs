@@ -207,6 +207,7 @@ serviceD m r = Exts.patBindWhere (pvar n) rhs bs
             [ field (unqual "_svcAbbrev")   (str abbrev)
             , field (unqual "_svcSigner")   (var sig)
             , field (unqual "_svcPrefix")   (m ^. endpointPrefix . to str)
+            , field (unqual "_svcSignName") (m ^. signingName . to str)
             , field (unqual "_svcVersion")  (m ^. apiVersion . to str)
             , field (unqual "_svcEndpoint") (Exts.app (var "defaultEndpoint") (var n))
             , field (unqual "_svcTimeout")  (Exts.app justE (Exts.intE 70))

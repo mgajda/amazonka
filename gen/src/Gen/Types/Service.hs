@@ -33,7 +33,7 @@ import Control.Comonad
 import Control.Comonad.Cofree
 import Control.Lens           ((%~), (&), (.~), (<&>), (?~), (^.))
 
-import Data.Aeson            (FromJSON, ToJSON, (.!=), (.:), (.:?), (.=))
+import Data.Aeson            (FromJSON, ToJSON, (.!=), (.:), (.:?), (.=), (.!=))
 import Data.Bifunctor        (first)
 import Data.Functor.Identity (Identity)
 import Data.List             (nub)
@@ -424,6 +424,7 @@ data Metadata f = Metadata
     , _apiVersion       :: Text
     , _signatureVersion :: !Signature
     , _endpointPrefix   :: Text
+    , _signingName      :: Text
     , _timestampFormat  :: f Timestamp
     , _checksumFormat   :: f Checksum
     , _xmlNamespace     :: Maybe Text
@@ -437,14 +438,17 @@ deriving instance Show (Metadata Identity)
 $(TH.makeClassy ''Metadata)
 
 instance FromJSON (Metadata Maybe) where
-    parseJSON = JSON.withObject "meta" $ \o -> Metadata
+    parseJSON = JSON.withObject "meta" $ \o -> do
+      endpoint <- o .: "endpointPrefix"
+      Metadata
         <$> o .:  "protocol"
         <*> o .:  "serviceAbbreviation"
         <*> (o .: "serviceAbbreviation" <&> serviceFunction)
         <*> (o .: "serviceFullName"     <&> renameService)
         <*> o .:  "apiVersion"
         <*> o .:  "signatureVersion"
-        <*> o .:  "endpointPrefix"
+        <*> pure endpoint
+        <*> o .:? "signingName" .!= endpoint
         <*> o .:? "timestampFormat"
         <*> o .:? "checksumFormat"
         <*> o .:? "xmlNamespace"
