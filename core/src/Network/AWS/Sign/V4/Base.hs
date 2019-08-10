@@ -220,7 +220,7 @@ credentialScope :: Service -> Endpoint -> UTCTime -> CredentialScope
 credentialScope s e t = Tag
     [ toBS (Time t :: BasicTime)
     , toBS (_endpointScope e)
-    , toBS (_svcPrefix     s)
+    , toBS (_svcSignName   s)
     , "aws4_request"
     ]
 
