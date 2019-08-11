@@ -430,6 +430,7 @@ data Service = Service
     { _svcAbbrev   :: !Abbrev
     , _svcSigner   :: !Signer
     , _svcPrefix   :: !ByteString
+    , _svcSignName :: !ByteString
     , _svcVersion  :: !ByteString
     , _svcEndpoint :: !(Region -> Endpoint)
     , _svcTimeout  :: !(Maybe Seconds)
