@@ -27,6 +27,7 @@ import Control.Monad.Except
 import Control.Monad.State
 
 import Data.List (find)
+import Data.Text (Text)
 
 import Gen.AST.Override
 import Gen.Formatting
@@ -63,10 +64,13 @@ substitute svc@Service{..} = do
     meta m@Metadata{..} = m
         { _timestampFormat = Identity ts
         , _checksumFormat  = _checksumFormat .! SHA256
+        , _signingName     = Identity sn
         }
 
     ts :: Timestamp
     ts = fromMaybe (timestamp (svc ^. protocol)) (svc ^. timestampFormat)
+    sn :: Text
+    sn = fromMaybe       (svc ^. endpointPrefix) (svc ^. signingName)
 
     operation :: Operation Maybe (RefF ()) a
               -> MemoS Related (Operation Identity (RefF ()) a)

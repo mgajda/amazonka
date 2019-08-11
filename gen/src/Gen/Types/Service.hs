@@ -424,7 +424,7 @@ data Metadata f = Metadata
     , _apiVersion       :: Text
     , _signatureVersion :: !Signature
     , _endpointPrefix   :: Text
-    , _signingName      :: Text
+    , _signingName      :: f Text
     , _timestampFormat  :: f Timestamp
     , _checksumFormat   :: f Checksum
     , _xmlNamespace     :: Maybe Text
@@ -439,7 +439,6 @@ $(TH.makeClassy ''Metadata)
 
 instance FromJSON (Metadata Maybe) where
     parseJSON = JSON.withObject "meta" $ \o -> do
-      endpoint <- o .: "endpointPrefix"
       Metadata
         <$> o .:  "protocol"
         <*> o .:  "serviceAbbreviation"
@@ -447,8 +446,8 @@ instance FromJSON (Metadata Maybe) where
         <*> (o .: "serviceFullName"     <&> renameService)
         <*> o .:  "apiVersion"
         <*> o .:  "signatureVersion"
-        <*> pure endpoint
-        <*> o .:? "signingName" .!= endpoint
+        <*> o .:  "endpointPrefix"
+        <*> o .:? "signingName"
         <*> o .:? "timestampFormat"
         <*> o .:? "checksumFormat"
         <*> o .:? "xmlNamespace"
